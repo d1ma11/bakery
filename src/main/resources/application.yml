@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    username: postgres
+    password: 1234567890
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/order_history_db
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+server:
+  port: 8081
+
+user:
+  raw-time: '{"DOUGH": 1, "MEAT": 2, "CABBAGE": 2, "FISH": 3, "BERRIES": 5, "LEAF_TEA": 2, "COFFEE_BEANS": 2}'
+  product-time: '{"MEAT_PIE": 1, "CABBAGE_PIE": 1, "FISH_PIE": 2, "BERRY_PIE": 2, "TEA": 3, "COFFEE": 4}'
