@@ -26,7 +26,7 @@ public class PreparationService {
         }
 
         if (productType == ProductType.TEA || productType == ProductType.COFFEE) {
-            Machine machine = cookingManager.getAvailableMachine();
+            Machine machine = cookingManager.getAvailableMachine(productType);
             machine.cook(productType, productProperties.getProductTime().get(productType.name()));
         } else {
             Oven oven = cookingManager.getAvailableOven();
@@ -47,7 +47,6 @@ public class PreparationService {
         }
         product.setCount(product.getCount() + 1);
         productRepository.save(product);
-        System.out.println("Продукт " + productType.name() + " отправлен на хранение на склад");
 
         warehouse.useRaws(productType);
     }

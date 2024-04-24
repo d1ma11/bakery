@@ -2,12 +2,14 @@ package ru.dima.bakery.product_preparation_system.model;
 
 import ru.dima.bakery.product_preparation_system.ProductType;
 
-public class Machine implements CookService {
+public abstract class Machine implements CookService {
     private boolean isAvailable = true;
 
     public boolean isAvailable() {
         return isAvailable;
     }
+
+    public abstract ProductType getProductType();
 
     @Override
     public void cook(ProductType productType, int cookingTime) {

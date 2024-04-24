@@ -3,6 +3,7 @@ package ru.dima.bakery.product_preparation_system.model;
 import org.springframework.stereotype.Component;
 import ru.dima.bakery.exception.AllMachinesAreBusyException;
 import ru.dima.bakery.exception.AllOvensAreBusyException;
+import ru.dima.bakery.product_preparation_system.ProductType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,8 @@ public class CookingManager {
         for (int i = 0; i < 5; i++) {
             ovens.add(new Oven(OvenType.SMALL, OvenType.SMALL.getCapacity()));
         }
-        machines.add(new Machine());
-        machines.add(new Machine());
+        machines.add(new TeaMachine());
+        machines.add(new CoffeeMachine());
     }
 
     public synchronized Oven getAvailableOven() {
@@ -39,9 +40,9 @@ public class CookingManager {
                 " Wait for a while until at least one oven is free");
     }
 
-    public synchronized Machine getAvailableMachine() {
+    public synchronized Machine getAvailableMachine(ProductType productType) {
         for (Machine machine : machines) {
-            if (machine.isAvailable()) {
+            if (machine.isAvailable() && machine.getProductType() == productType) {
                 return machine;
             }
         }
