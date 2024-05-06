@@ -1,24 +1,49 @@
 package ru.dima.bakery.product_preparation_system.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import ru.dima.bakery.order_system.model.OrderProduct;
 import ru.dima.bakery.product_preparation_system.ProductType;
+
+import java.util.List;
 
 @Entity
 public class Product {
     @Id
-    @Enumerated(value = EnumType.STRING)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     private ProductType productType;
 
     private int count;
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<OrderProduct> productInOrders;
+
     public Product() {
     }
 
-    public Product(int count, ProductType productType) {
+    public Product(Integer id, ProductType productType, int count, List<OrderProduct> productInOrders) {
+        this.id = id;
+        this.productType = productType;
         this.count = count;
+        this.productInOrders = productInOrders;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public void setProductType(ProductType productType) {
         this.productType = productType;
     }
 
@@ -30,11 +55,11 @@ public class Product {
         this.count = count;
     }
 
-    public ProductType getProductType() {
-        return productType;
+    public List<OrderProduct> getProductInOrders() {
+        return productInOrders;
     }
 
-    public void setProductType(ProductType productType) {
-        this.productType = productType;
+    public void setProductInOrders(List<OrderProduct> productInOrders) {
+        this.productInOrders = productInOrders;
     }
 }

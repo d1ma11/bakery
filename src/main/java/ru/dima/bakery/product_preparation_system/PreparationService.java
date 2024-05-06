@@ -3,6 +3,7 @@ package ru.dima.bakery.product_preparation_system;
 import org.springframework.stereotype.Service;
 import ru.dima.bakery.product_preparation_system.model.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,6 +34,10 @@ public class PreparationService {
             oven.cook(productType, productProperties.getProductTime().get(productType.name()));
         }
         saveProduct(productType);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     private void saveProduct(ProductType productType) {

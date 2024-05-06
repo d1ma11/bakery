@@ -8,7 +8,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
 server:
   port: 8081
@@ -16,3 +16,6 @@ server:
 user:
   raw-time: '{"DOUGH": 1, "MEAT": 2, "CABBAGE": 2, "FISH": 3, "BERRIES": 5, "LEAF_TEA": 2, "COFFEE_BEANS": 2}'
   product-time: '{"MEAT_PIE": 1, "CABBAGE_PIE": 1, "FISH_PIE": 2, "BERRY_PIE": 2, "TEA": 3, "COFFEE": 4}'
+  order-properties:
+    position-count: 6
+    order-time: 3

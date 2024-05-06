@@ -22,11 +22,6 @@ public class PurchaseController {
         purchaseService.purchaseRaw(rawType, count);
     }
 
-    @GetMapping("/raw/time")
-    public void getAllTimeForEveryRaw() {
-        purchaseService.printRawMaterials();
-    }
-
     @GetMapping("/raw")
     public List<Raw> getAllRaws() {
         return purchaseService.getAllRaws();

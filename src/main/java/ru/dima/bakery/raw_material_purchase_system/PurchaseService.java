@@ -30,11 +30,6 @@ public class PurchaseService {
         return rawRepository.findAll();
     }
 
-    public void printRawMaterials() {
-        rawProperties.getRawMaterials().forEach((key, value) ->
-                System.out.println("Сырье: " + key + ", количество: " + value));
-    }
-
     private void saveRaw(RawType rawType, int count) {
         Optional<Raw> existingRaw = rawRepository.findRawByRawType(rawType);
         Raw raw;
