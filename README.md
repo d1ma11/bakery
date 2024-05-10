@@ -6,7 +6,7 @@
 
 - [x] [Система закупки сырья](#raw_system)
 - [x] [Система приготовления продукции](#preparing_system)
-- [ ] [Система заказов](#order_system)
+- [x] [Система заказов](#order_system)
 - [ ] [Система доставки](#delivery_system)
 - [ ] [Система истории](#history_system)
 
