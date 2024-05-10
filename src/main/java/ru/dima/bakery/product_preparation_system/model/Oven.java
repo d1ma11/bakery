@@ -5,6 +5,7 @@ import ru.dima.bakery.product_preparation_system.ProductType;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Oven implements CookService {
+
     private final OvenType ovenType;
     private final int capacity;
     private volatile AtomicInteger currentLoad;
@@ -35,14 +36,7 @@ public class Oven implements CookService {
     public void cook(ProductType productType, int cookingTime) {
         Thread cookingThread = new Thread(() -> {
             currentLoad.incrementAndGet();
-            System.out.println("Началась готовка продукта - " + productType.name() + " в потоке " + Thread.currentThread().getName());
-            try {
-                Thread.sleep(cookingTime * 1000L);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.err.println("Приготовление было прервано");
-            }
-            System.out.println("Готовка продукта " + productType.name() + " закончилась в потоке " + Thread.currentThread().getName());
+            cookLog(Thread.currentThread(), productType, cookingTime);
             currentLoad.decrementAndGet();
         });
         cookingThread.setName(ovenType.name() + "-" + currentLoad.get());

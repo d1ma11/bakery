@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.dima.bakery.exception.NotEnoughRawException;
 import ru.dima.bakery.product_preparation_system.model.Product;
 
 import java.util.List;

@@ -19,14 +19,6 @@ public class ProductWarehouse {
         this.productRepository = productRepository;
     }
 
-    /*
-    Данный метод под сомнением, т.к. при использовании метода getRandomProductsForOrder() используется
-    метод хранилища findAll(), который уже подразумевает, что продукт уже находится в базе данных
-     */
-    public synchronized boolean checkWarehouse(Product product) {
-        return true;
-    }
-
     public List<Product> getRandomProductsForOrder() {
         int index = 0; // Используется индекс 0, т.к. пока в нашей базе данных есть только 6 рецептов продуктов
         Page<Product> productPage = productRepository.findAll(PageRequest.of(index, random.nextInt(1, 7)));

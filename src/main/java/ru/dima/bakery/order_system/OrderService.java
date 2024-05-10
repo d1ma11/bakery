@@ -46,14 +46,6 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    /*
-    Тестовый метод для проверки, как происходит рандомная выборка продуктов из базы данных
-     */
-    public List<Product> getRandomProducts() {
-
-        return productWarehouse.getRandomProductsForOrder();
-    }
-
     private void saveOrder() {
         Order order = new Order();
         order.setOrderType(OrderType.randomOrderType());

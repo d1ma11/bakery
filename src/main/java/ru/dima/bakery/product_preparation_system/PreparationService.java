@@ -1,6 +1,10 @@
 package ru.dima.bakery.product_preparation_system;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.dima.bakery.exception.NotEnoughIngredientsException;
+import ru.dima.bakery.exception.NotEnoughRawException;
 import ru.dima.bakery.product_preparation_system.model.*;
 
 import java.util.List;
@@ -8,12 +12,17 @@ import java.util.Optional;
 
 @Service
 public class PreparationService {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(PreparationService.class);
     private final ProductRepository productRepository;
     private final ProductProperties productProperties;
     private final CookingManager cookingManager;
     private final Warehouse warehouse;
 
-    public PreparationService(ProductRepository productRepository, ProductProperties productProperties, CookingManager cookingManager, Warehouse warehouse) {
+    public PreparationService(ProductRepository productRepository,
+                              ProductProperties productProperties,
+                              CookingManager cookingManager,
+                              Warehouse warehouse) {
         this.productRepository = productRepository;
         this.productProperties = productProperties;
         this.cookingManager = cookingManager;
@@ -21,8 +30,10 @@ public class PreparationService {
     }
 
     public void makeProduct(ProductType productType) {
-        if (!warehouse.checkWarehouse(productType)) {
-            System.err.println("Не хватает сырья для приготовления продута - " + productType.name());
+        try {
+            warehouse.checkWarehouse(productType);
+        } catch (NotEnoughRawException e) {
+            LOGGER.error(e.getMessage(), e);
             return;
         }
 

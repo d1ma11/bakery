@@ -10,6 +10,7 @@ import java.util.List;
 
 @Component
 public class CookingManager {
+
     private final List<Oven> ovens;
     private final List<Machine> machines;
 

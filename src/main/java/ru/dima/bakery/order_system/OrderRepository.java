@@ -6,5 +6,4 @@ import ru.dima.bakery.order_system.model.Order;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-
 }

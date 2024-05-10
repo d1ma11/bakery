@@ -1,6 +1,7 @@
 package ru.dima.bakery.product_preparation_system.model;
 
 import org.springframework.stereotype.Component;
+import ru.dima.bakery.exception.NotEnoughRawException;
 import ru.dima.bakery.product_preparation_system.ProductType;
 import ru.dima.bakery.raw_material_purchase_system.RawRepository;
 import ru.dima.bakery.raw_material_purchase_system.RawType;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Component
 public class Warehouse {
+
     private final static Map<ProductType, Map<RawType, Integer>> productRecipes = new HashMap<>();
     private final RawRepository rawRepository;
 
@@ -32,32 +34,34 @@ public class Warehouse {
      * Проверяет склад, есть ли в нем необходимое количество сырья для приготовления входного типа продукта
      *
      * @param productType входной тип продукта
-     * @return true - сырья достаточно, false - сырья не хватает
      */
-    public boolean checkWarehouse(ProductType productType) {
+    public void checkWarehouse(ProductType productType) throws NotEnoughRawException {
         Map<RawType, Integer> requiredRawMaterials = productRecipes.get(productType);
+
         for (Map.Entry<RawType, Integer> entry : requiredRawMaterials.entrySet()) {
             if (!rawRepository.existsByRawTypeAndCountGreaterThanEqual(entry.getKey(), entry.getValue())) {
-                return false;
+                throw new NotEnoughRawException("Не хватает сырья для приготовления продута - " + productType.name());
             }
         }
-        return true;
     }
 
     /**
      * Уменьшает количество того сырья, которое используется для создания продукта
+     *
      * @param productType продукт, который должен быть приготовлен
      */
     public void useRaws(ProductType productType) {
-        Map<RawType, Integer> rawUsage = productRecipes.get(productType);
-        for (Map.Entry<RawType, Integer> entry : rawUsage.entrySet()) {
-            Optional<Raw> rawOptional = rawRepository.findRawByRawType(entry.getKey());
+        Map<RawType, Integer> rawUsageForProduct = productRecipes.get(productType);
+
+        for (Map.Entry<RawType, Integer> rawTypeAndHisQuantity : rawUsageForProduct.entrySet()) {
+            RawType recipeRaw = rawTypeAndHisQuantity.getKey();
+            Optional<Raw> rawOptional = rawRepository.findRawByRawType(recipeRaw);
+
             if (rawOptional.isPresent()) {
                 Raw raw = rawOptional.get();
-                raw.setCount(raw.getCount() - entry.getValue());
+                raw.setCount(raw.getCount() - rawTypeAndHisQuantity.getValue());
+
                 rawRepository.save(raw);
-            } else {
-                System.err.println("Недостаточно ингредиентов");
             }
         }
     }

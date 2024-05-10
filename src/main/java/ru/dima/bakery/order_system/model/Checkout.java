@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Checkout {
+
     private final static Logger LOGGER = LoggerFactory.getLogger(Checkout.class);
     private final String checkoutName;
     private boolean isAvailable = true;

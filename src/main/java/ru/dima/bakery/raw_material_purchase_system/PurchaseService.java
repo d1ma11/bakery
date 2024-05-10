@@ -1,5 +1,9 @@
 package ru.dima.bakery.raw_material_purchase_system;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.dima.bakery.raw_material_purchase_system.model.Raw;
 
@@ -10,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class PurchaseService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseService.class);
     private final RawRepository rawRepository;
     private final RawProperties rawProperties;
 
@@ -19,11 +24,11 @@ public class PurchaseService {
     }
 
     public void purchaseRaw(RawType rawType, int count) throws InterruptedException {
-        System.out.println("Покупаем - " + rawType.name().toLowerCase() + ", количество - " + count);
+        LOGGER.info("Покупаем - {}, количество {}", rawType.name().toLowerCase(), count);
         saveRaw(rawType, count);
         int time = rawProperties.getRawMaterials().get(rawType.name());
         TimeUnit.SECONDS.sleep(time);
-        System.out.println("Покупка завершена");
+        LOGGER.info("Покупка завершена");
     }
 
     public List<Raw> getAllRaws() {
