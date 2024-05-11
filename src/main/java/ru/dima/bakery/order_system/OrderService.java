@@ -71,7 +71,7 @@ public class OrderService {
             orderProduct.setId(new OrderProductKey(order.getId(), entry.getKey().getId()));
             orderProduct.setOrder(order);
             orderProduct.setProduct(entry.getKey());
-            orderProduct.setProductCount(entry.getValue());       // Здесь устанавливаем то количество продуктов в заказе, которое используется
+            orderProduct.setProductCount(entry.getValue());
             orderProducts.add(orderProduct);
         }
 
