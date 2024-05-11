@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     Optional<Product> findProductByProductType(ProductType productType);
 
-    Page<Product> findAll(Pageable pageable);
+    Page<Product> findAllByCountIsGreaterThanEqual(int num, Pageable pageable);
 }

@@ -1,18 +1,23 @@
 package ru.dima.bakery.order_system;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dima.bakery.exception.NoProductsAreCookedException;
 import ru.dima.bakery.order_system.model.*;
 import ru.dima.bakery.product_preparation_system.model.Product;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
+
     private final OrderRepository orderRepository;
     private final OrderProperties orderProperties;
     private final ProductWarehouse productWarehouse;
@@ -34,33 +39,39 @@ public class OrderService {
     должны передавать город доставки, тип доставки и сам заказ.
     Однако у нас все это содержится в объекте заказа, поэтому не надо парится
      */
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public void makeOrder() {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void makeOrder() throws NoProductsAreCookedException {
+        saveOrder();
+
         Checkout checkout = checkoutManager.getAvailableCheckout();
         checkout.prepareOrder(orderProperties.getOrderTime());
-
-        saveOrder();
     }
 
-    public List<Order> getOrders() {
-        return orderRepository.findAll();
+    public ResponseEntity<List<Order>> getOrders() {
+        List<Order> orders = orderRepository.findAll();
+        if (orders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(orders, HttpStatus.FOUND);
     }
 
-    private void saveOrder() {
+    //TODO: нужно закинуть логику метода saveOrder() в класс Checkout, т.к. исходя из логики,
+    // заказ должен готовиться в сущности кассы, а не отдельно от этой сущности
+    private void saveOrder() throws NoProductsAreCookedException {
         Order order = new Order();
         order.setOrderType(OrderType.randomOrderType());
         order.setCreationTime(LocalDateTime.now());
         order.setCity(CityDelivery.randomCityDelivery());
 
-        List<Product> productsInOrder = productWarehouse.getRandomProductsForOrder();
+        Map<Product, Integer> productsInOrder = productWarehouse.getRandomProductsForOrder();
 
         List<OrderProduct> orderProducts = new ArrayList<>();
-        for (Product product : productsInOrder) {
+        for (Map.Entry<Product, Integer> entry : productsInOrder.entrySet()) {
             OrderProduct orderProduct = new OrderProduct();
-            orderProduct.setId(new OrderProductKey(order.getId(), product.getId()));
+            orderProduct.setId(new OrderProductKey(order.getId(), entry.getKey().getId()));
             orderProduct.setOrder(order);
-            orderProduct.setProduct(product);
-            orderProduct.setProductCount(product.getCount());
+            orderProduct.setProduct(entry.getKey());
+            orderProduct.setProductCount(entry.getValue());       // Здесь устанавливаем то количество продуктов в заказе, которое используется
             orderProducts.add(orderProduct);
         }
 

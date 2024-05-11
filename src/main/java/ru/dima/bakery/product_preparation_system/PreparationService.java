@@ -2,8 +2,9 @@ package ru.dima.bakery.product_preparation_system;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.dima.bakery.exception.NotEnoughIngredientsException;
 import ru.dima.bakery.exception.NotEnoughRawException;
 import ru.dima.bakery.product_preparation_system.model.*;
 
@@ -47,10 +48,16 @@ public class PreparationService {
         saveProduct(productType);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        if (products.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(products, HttpStatus.FOUND);
     }
 
+    //TODO: нужно закинуть логику метода saveProduct() в класс Oven и Machine, т.к. исходя из логики,
+    // продукт должен готовиться в сущности печки, а не отдельно от этой сущности
     private void saveProduct(ProductType productType) {
         Optional<Product> existingProduct = productRepository.findProductByProductType(productType);
         Product product;

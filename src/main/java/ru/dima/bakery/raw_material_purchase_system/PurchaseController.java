@@ -1,5 +1,6 @@
 package ru.dima.bakery.raw_material_purchase_system;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.dima.bakery.raw_material_purchase_system.model.Raw;
@@ -16,6 +17,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/raw/{rawType}")
+    @ResponseStatus(HttpStatus.CREATED)
     public void purchaseRaw(
             @PathVariable("rawType") RawType rawType,
             @RequestParam int count
@@ -24,7 +26,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/raw")
-    public List<Raw> getAllRaws() {
+    public ResponseEntity<List<Raw>> getAllRaws() {
         return purchaseService.getAllRaws();
     }
 }

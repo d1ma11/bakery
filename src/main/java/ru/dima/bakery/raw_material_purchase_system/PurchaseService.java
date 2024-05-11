@@ -31,8 +31,12 @@ public class PurchaseService {
         LOGGER.info("Покупка завершена");
     }
 
-    public List<Raw> getAllRaws() {
-        return rawRepository.findAll();
+    public ResponseEntity<List<Raw>> getAllRaws() {
+        List<Raw> raws = rawRepository.findAll();
+        if (raws.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(raws, HttpStatus.FOUND);
     }
 
     private void saveRaw(RawType rawType, int count) {
